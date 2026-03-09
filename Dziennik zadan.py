@@ -51,7 +51,12 @@ class DziennikZadan(ctk.CTk):
 
         #Główne Okno z zadaniami 
         
-        self.textbox = ctk.CTkTextbox(self.tabview.tab("Twoja Lista"), width=600, height=350, font=("Arial", 16), state ="disabled")
+        self.textbox = ctk.CTkTextbox(self.tabview.tab("Twoja Lista"), width=600, height=350, font=("Arial", 16), state ="disabled",wrap="none")
+        # Definiujemy kolory dla różnych części zadania
+        self.textbox.tag_config("data", foreground="gray")         # Data będzie szara
+        self.textbox.tag_config("zadanie", foreground="white")     # Treść zadania biała
+        self.textbox.tag_config("notatka", foreground="#3a7ebf")   # Notatka błękitna
+        self.textbox.tag_config("zakonczone", foreground="#2ecc71")
         self.textbox.grid(row=0, column = 10, rowspan= 6, padx=10, pady=10, sticky= "nsew")
 
         self.button_finish = ctk.CTkButton(self.tabview.tab("Twoja Lista"), text="ZAKOŃCZ ZAZNACZONE", command=self.zakoncz_zadanie, cursor="hand2")
@@ -115,17 +120,16 @@ class DziennikZadan(ctk.CTk):
 
         if zadanie:
             #Na razie dopisujemy do okna na ekranie
+            teraz = datetime.now().strftime("[%H:%M]")
             self.textbox.configure(state="normal")
-
-            self.textbox.insert("end", f"- {zadanie} \n")
+            
+            #Wstawiamy kawałkami nadając im TAGI (kolory)
+            self.textbox.insert("end", f"{teraz} ", "data")
+            self.textbox.insert("end", f"- {zadanie}\n\n", "zadanie")
+            
             self.textbox.configure(state="disabled")
-            self.entry.delete(0, 'end') # Czyscimy pole po dodaniu
-
-
-
-            print(f"Dodano zadanie: {zadanie}")
-
-
+            self.entry.delete(0, 'end')
+            self.odswiez_statystki()
             self.odswiez_statystki()
 
 
@@ -244,40 +248,35 @@ class DziennikZadan(ctk.CTk):
 
     def dodaj_notatke(self):
         try:
-            #Pobieram dane wejsciowe
             wybrane = self.textbox.get("insert linestart", "insert lineend").strip()
             notatka = self.note_entry.get()
 
-            if not wybrane or not notatka: return 
+            if not wybrane or not notatka: return
 
             self.textbox.configure(state="normal")
+
+            #Pobieram tekst
             tresc = self.textbox.get("1.0", "end")
+            czyste = wybrane.split(" ➔ ")[0].strip()
 
-            #Rozcinam linie zeby usunac stara notatke
+            #Skladamy nową linijke
 
-
-            czyste_zadanie = wybrane.split("  |  ")[0].strip()
-
-            #Skadlam nowa liniez notatka
-
-            nowe = f"{czyste_zadanie}| Notatka : {notatka}"
-
-            #Podmieniam tekst w calym oknie
+            nowe = f"{czyste}\n ➔ {notatka}"
+            #Pobieramy testk w oknie
 
             nowa_tresc = tresc.replace(wybrane, nowe)
-
             self.textbox.delete("1.0", "end")
             self.textbox.insert("1.0", nowa_tresc.strip()+"\n")
+
+            #Nakldadamy styl 
+
+            self.odswiez_kolory_notatek()
+
             self.textbox.configure(state="disabled")
-
-            #Czysce pole wpisywania notatki 
-
             self.note_entry.delete(0, "end")
-
-            print(f"Dodano notatkę do : {czyste_zadanie}")
-
-        except Exception as e:
-            print("Bład dodawania notatki", {e})
+        except:
+            print("Błąd notatki")
+           
 
 
 
@@ -315,6 +314,28 @@ class DziennikZadan(ctk.CTk):
         else:
             self.progress_bar.set(0)
             self.label_stats.configure(text="Dodaj pierwsze zadanie")
+
+
+    def odswiez_kolory_notatek(self):
+        #Odblokowujemy, żeby móc "malować"
+        self.textbox.configure(state="normal")
+        
+        #Szukamy wszystkich wystąpień strzałki ➔ w oknie
+        idx = "1.0"
+        while True:
+            # Szukamy od aktualnego indeksu do końca
+            idx = self.textbox.search("➔", idx, stopindex="end")
+            if not idx:
+                break # Brak więcej strzałek - kończymy
+            
+            #Malujemy od strzałki do końca tej linii (lineend)
+            koniec_linii = self.textbox.index(f"{idx} lineend")
+            self.textbox.tag_add("notatka", idx, koniec_linii)
+            
+            #Przesuwamy kursor wyszukiwania o jeden znak dalej
+            idx = self.textbox.index(f"{idx} + 1c")
+            
+        self.textbox.configure(state="disabled")
 
 
 
