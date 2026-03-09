@@ -55,6 +55,12 @@ class DziennikZadan(ctk.CTk):
         self.button_delete = ctk.CTkButton(self.tabview.tab("Twoja Lista"), text="USUŃ ZAZNACZONE", command=self.usun_zadanie, fg_color="red", cursor="hand2")
         self.button_delete.pack(pady=5)
 
+        self.note_entry = ctk.CTkEntry(self.tabview.tab("Twoja Lista"), placeholder_text="Dodaj notatke...", width=300)
+        self.note_entry.pack(pady=5)
+
+        self.button_note = ctk.CTkButton(self.tabview.tab("Twoja Lista"), text="DODAJ NOTATKE", command=self.dodaj_notatke, cursor="hand2")
+        self.button_note.pack(pady=5)
+
         #Pasek postepu
 
         self.label_stats = ctk.CTkLabel(self.tabview.tab("Twoja Lista"), text="Postep: 0%")
@@ -225,6 +231,48 @@ class DziennikZadan(ctk.CTk):
             json.dump(data_to_save, plik, indent=4, ensure_ascii=False)
 
         self.destroy()
+
+
+    def dodaj_notatke(self):
+        try:
+            #Pobieram dane wejsciowe
+            wybrane = self.textbox.get("insert linestart", "insert lineend").strip()
+            notatka = self.note_entry.get()
+
+            if not wybrane or not notatka: return 
+
+            self.textbox.configure(state="normal")
+            tresc = self.textbox.get("1.0", "end")
+
+            #Rozcinam linie zeby usunac stara notatke
+
+
+            czyste_zadanie = wybrane.split("  |  ")[0].strip()
+
+            #Skadlam nowa liniez notatka
+
+            nowe = f"{czyste_zadanie}| Notatka : {notatka}"
+
+            #Podmieniam tekst w calym oknie
+
+            nowa_tresc = tresc.replace(wybrane, nowe)
+
+            self.textbox.delete("1.0", "end")
+            self.textbox.insert("1.0", nowa_tresc.strip()+"\n")
+            self.textbox.configure(state="disabled")
+
+            #Czysce pole wpisywania notatki 
+
+            self.note_entry.delete(0, "end")
+
+            print(f"Dodano notatkę do : {czyste_zadanie}")
+
+        except Exception as e:
+            print("Bład dodawania notatki", {e})
+
+
+
+
 
     def odswiez_statystki(self):
         #Pobieram tetk i robie z niego tuple
