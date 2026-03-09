@@ -1,0 +1,50 @@
+[
+    {
+        "raw_text": "✅ Dodac X [ZAKONCZONE o 2026.03.09 - 14.46] ",
+        "status": "done"
+    },
+    {
+        "raw_text": "✅ Naprawic JSON [ZAKONCZONE o 2026.03.07 - 23.34] ",
+        "status": "done"
+    },
+    {
+        "raw_text": "✅ DODAC Date [ZAKONCZONE o 2026.03.07 - 23.35] ",
+        "status": "done"
+    },
+    {
+        "raw_text": "- DODAC GODZINE ",
+        "status": "todo"
+    },
+    {
+        "raw_text": "✅ ZROZUMIEC FOR [ZAKONCZONE o 2026.03.07 - 23.35]",
+        "status": "done"
+    },
+    {
+        "raw_text": "✅ Zrobić % skoncznie zadan [ZAKONCZONE o 2026.03.07 - 23.35]",
+        "status": "done"
+    },
+    {
+        "raw_text": "- Poprawić kursor ",
+        "status": "todo"
+    },
+    {
+        "raw_text": "- W trakcie kliknecia na zadanie dodac zaznaczenie ,żeby było widać co zaznaczasz",
+        "status": "todo"
+    },
+    {
+        "raw_text": "- Dodać mirkonotatki do zadania ,żeby mozna było zaznaczac co trzeba zrobic ",
+        "status": "todo"
+    },
+    {
+        "raw_text": "- poprawić okienko ,żby nie ucinalo zdania",
+        "status": "todo"
+    },
+    {
+        "raw_text": "",
+        "status": "todo"
+    },
+    {
+        "raw_text": "",
+        "status": "todo"
+    }
+]
