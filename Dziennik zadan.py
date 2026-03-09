@@ -19,7 +19,7 @@ class DziennikZadan(ctk.CTk):
            
         
         # 1. Konfiguracja okna
-        self.title("Dziennik Projektów")
+        self.title("Task Manager")
         self.geometry("600x700")
 
         # 2. Zakładki
@@ -27,6 +27,13 @@ class DziennikZadan(ctk.CTk):
         self.tabview.pack(pady=10)
         self.tabview.add("Warsztat")
         self.tabview.add("Twoja Lista")
+        self.tabview.add("Inne")
+
+
+        #---- Zakładka: Inne -----
+
+        self.listbox = ctk.CTkTextbox(self.tabview.tab("Inne"), width=600, height=350, font=("Arial", 16), state ="disabled")
+        self.listbox.pack(pady=10)
 
         # --- ZAKŁADKA: WARSZTAT ---
         self.entry = ctk.CTkEntry(self.tabview.tab("Warsztat"), placeholder_text="Wpisz zadanie....", width=400)
@@ -52,6 +59,12 @@ class DziennikZadan(ctk.CTk):
 
         self.label_stats = ctk.CTkLabel(self.tabview.tab("Twoja Lista"), text="Postep: 0%")
         self.label_stats.pack(pady=5)
+
+        #Pasek Postepu Graficznie 
+
+        self.progress_bar = ctk.CTkProgressBar(self.tabview.tab("Twoja Lista"),width=400 )
+        self.progress_bar.pack(pady=10)
+        self.progress_bar.set(0)
 
         # --- PRZYCISK ZAPISU (NA DOLE) ---
         self.button_saveandquit = ctk.CTkButton(self, text="ZAPISZ I WYJDŹ", command=self.save_quit, fg_color="green", cursor="hand2")
@@ -185,32 +198,13 @@ class DziennikZadan(ctk.CTk):
             self.textbox.delete("1.0", "end")
             self.textbox.insert("1.0", nowa_tresc.strip()+"\n")
             self.textbox.configure(state="disabled")
+            self.odswiez_statystki()
         except:
             print("Bład odznaczenia")
 
-    def odswiez_statystki(self):
-        #Pobieram tetk i robie z niego tuple
+        
 
-        linie = self.textbox.get("1.0", "end-1c").split("\n")
-
-        ile_zrobionych = 0
-        ile_wszystkich = 0 
-
-        #Petla for
-
-        for linia in linie:
-            czysta_linia=linia.strip()
-            if czysta_linia:
-                ile_wszystkich += 1
-                if "✅" in czysta_linia:
-                    ile_zrobionych += 1
-
-        if ile_wszystkich >0:
-            procent = (ile_zrobionych / ile_wszystkich) * 100
-
-            self.label_stats.configure(text=f"Postęp : {procent:.0f}% ({ile_zrobionych}/{ile_wszystkich})")
-        else:
-            self.label_stats.configure(text="Dodaj pierwsze zadanie")
+    
        
     def save_quit(self):
         #1.Pobieramy linie i zamienamy na liste słowników
@@ -231,6 +225,39 @@ class DziennikZadan(ctk.CTk):
             json.dump(data_to_save, plik, indent=4, ensure_ascii=False)
 
         self.destroy()
+
+    def odswiez_statystki(self):
+        #Pobieram tetk i robie z niego tuple
+
+        linie = self.textbox.get("1.0", "end-1c").split("\n")
+
+        ile_zrobionych = 0
+        ile_wszystkich = 0 
+
+       
+        #Petla for
+
+        for linia in linie:
+            czysta_linia=linia.strip()
+            if czysta_linia:
+                ile_wszystkich += 1
+                if "✅" in czysta_linia:
+                    ile_zrobionych += 1
+
+        if ile_wszystkich >0:
+            ulamek = (ile_zrobionych / ile_wszystkich) 
+
+            self.progress_bar.set(ulamek)
+
+            procent = ulamek * 100
+
+            self.label_stats.configure(text= f"Postęp : {procent:.0f}% ({ile_zrobionych}/{ile_wszystkich})"
+                                       )
+
+
+        else:
+            self.progress_bar.set(0)
+            self.label_stats.configure(text="Dodaj pierwsze zadanie")
 
 
 
