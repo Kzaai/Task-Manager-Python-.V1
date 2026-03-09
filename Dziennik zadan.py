@@ -20,7 +20,7 @@ class DziennikZadan(ctk.CTk):
         
         # 1. Konfiguracja okna
         self.title("Task Manager")
-        self.geometry("600x700")
+        self.geometry("900x700")
 
         # 2. Zakładki
         self.tabview = ctk.CTkTabview(self, width=650, height=550)
@@ -43,33 +43,42 @@ class DziennikZadan(ctk.CTk):
         self.button_add.pack(pady=10)
 
         # --- ZAKŁADKA: TWOJA LISTA ---
+
+        #Kolumny 
+
+        self.tabview.tab("Twoja Lista").grid_columnconfigure(0, weight=3)
+        self.tabview.tab("Twoja Lista").grid_columnconfigure(1, weight=1)
+
+        #Główne Okno z zadaniami 
+        
         self.textbox = ctk.CTkTextbox(self.tabview.tab("Twoja Lista"), width=600, height=350, font=("Arial", 16), state ="disabled")
-        self.textbox.pack(pady=10)
+        self.textbox.grid(row=0, column = 10, rowspan= 6, padx=10, pady=10, sticky= "nsew")
 
         self.button_finish = ctk.CTkButton(self.tabview.tab("Twoja Lista"), text="ZAKOŃCZ ZAZNACZONE", command=self.zakoncz_zadanie, cursor="hand2")
-        self.button_finish.pack(pady=5)
+        self.button_finish.grid(row=0, column=1, padx=5, pady=5, sticky="ew")
 
         self.button_undo = ctk.CTkButton(self.tabview.tab("Twoja Lista"), text="ODZNACZ ZAZNACZONE", command=self.odznacz_zadanie, cursor="hand2")
-        self.button_undo.pack(pady=5)
+        self.button_undo.grid(row=1, column=1, padx=5, pady=5, sticky="ew")
 
         self.button_delete = ctk.CTkButton(self.tabview.tab("Twoja Lista"), text="USUŃ ZAZNACZONE", command=self.usun_zadanie, fg_color="red", cursor="hand2")
-        self.button_delete.pack(pady=5)
+        self.button_delete.grid(row=2, column=1, padx=5, pady=5, sticky="ew")
 
         self.note_entry = ctk.CTkEntry(self.tabview.tab("Twoja Lista"), placeholder_text="Dodaj notatke...", width=300)
-        self.note_entry.pack(pady=5)
+        self.note_entry.grid(row=3, column=1, padx=5, pady=5, sticky="ew")
 
         self.button_note = ctk.CTkButton(self.tabview.tab("Twoja Lista"), text="DODAJ NOTATKE", command=self.dodaj_notatke, cursor="hand2")
-        self.button_note.pack(pady=5)
+        self.button_note.grid(row=4, column=1, padx=5, pady=5, sticky="ew")
 
         #Pasek postepu
 
         self.label_stats = ctk.CTkLabel(self.tabview.tab("Twoja Lista"), text="Postep: 0%")
-        self.label_stats.pack(pady=5)
+        self.label_stats.grid(row=6, column=0, columnspan=2,pady=5, sticky ="ew")
+
 
         #Pasek Postepu Graficznie 
 
         self.progress_bar = ctk.CTkProgressBar(self.tabview.tab("Twoja Lista"),width=400 )
-        self.progress_bar.pack(pady=10)
+        self.progress_bar.grid(row=7, column=0, columnspan=3,pady=10, padx=20, sticky="ew"  )
         self.progress_bar.set(0)
 
         # --- PRZYCISK ZAPISU (NA DOLE) ---
